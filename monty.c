@@ -1,28 +1,35 @@
-
 #include "monty.h"
 
-args_t args;
+allocated_t mem;
 
 /**
- * main - entry point
- * @argc: number of arguments
- * @argv: array of argc
- * Return: success on exit, exit failure otherwise
+ * main - Main entry
+ * Description: Monty bytecodes files interpreter
+ * @argc: total of arguments
+ * @argv: The arguments, monty files
+ * Return: int
  */
-int main(int argc, char **argv)
+int main(int argc, char const *argv[])
 {
+  /* Checks if file arguments is less than or more than 2*/
   if (argc != 2)
     {
       fprintf(stderr, "USAGE: monty file\n");
-      exit(EXIT_FAILURE);
+      return (EXIT_FAILURE);
     }
-  args.argv = argv;
-  args.counter = 0;
-  args.line = NULL;
-  args.stack = NULL;
-  args.file = NULL;
-  args.order = 1;
-  monty();
-  free_dlistint(args.stack);
-  return (EXIT_SUCCESS);
+
+  /* set defaults format mode to stack */
+  mem.mode = STACK;
+
+  /* Attempts to open the file */
+  mem.pScript = fopen(argv[1], "r");
+  if (mem.pScript == NULL)
+    {
+      fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
+      return (EXIT_FAILURE);
+    }
+
+  /* Executes the monty bytecode script */
+  execute_script();
+  return (0);
 }
